@@ -39,13 +39,15 @@ func Cosine(a []float64, b []float64) (cosine float64, err error) {
 func (moscato *Moscato) ImageMatching(msg MsgUnit) {
 
 	topic := msg.(PublishedImage).Topic
-	NewMyLogger().Debug(FloatSlice2String(topic))
+	//NewMyLogger().Debug(FloatSlice2String(topic))
 	sub_mng := moscato.SubscriptionManager
 
 	// iplist for return
 	//ipList := make([]string, 0)
 
 	topicPtr := sub_mng.list
+
+	//유사도 임계치 이상 노드 모음, cosine유사도 뭉치
 	ptr, cosine := topicPtr.getTopicBySimilarity(topic)
 
 	// No topicNode
@@ -54,7 +56,6 @@ func (moscato *Moscato) ImageMatching(msg MsgUnit) {
 		var empt = make([]float64, 0)
 		moscato.SendQueue <- myType{nil, msg, empt, errors.New("No Exist Matching Topic")}
 	} else {
-
 		//find exact topic match
 		iplist := make([]string, 0)
 		var cosineList []float64

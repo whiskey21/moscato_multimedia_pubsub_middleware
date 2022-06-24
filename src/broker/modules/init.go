@@ -332,11 +332,11 @@ func (moscato *Moscato) Run() {
 
 	send2MSFile, _ := os.Create("./send2MsTime.log")
 	defer send2MSFile.Close()
+
 	//go routine -> matching 동작
 	go func() {
 		for {
 			msg := moscato.queue.pop(true)
-			//fmt.Println("poped msg") // poped msg 확인
 			fmt.Println(FloatSlice2String(msg.(PublishedImage).Topic))
 			encStartTime := time.Now()
 			go moscato.ImageMatching(msg)
