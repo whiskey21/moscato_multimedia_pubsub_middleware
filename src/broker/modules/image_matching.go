@@ -56,23 +56,33 @@ func (moscato *Moscato) ImageMatching(msg MsgUnit) {
 		var empt = make([]float64, 0)
 		moscato.SendQueue <- myType{nil, msg, empt, errors.New("No Exist Matching Topic")}
 	} else {
-		//find exact topic match
-		iplist := make([]string, 0)
+
+		ipList := make([]string, 0)
 		var cosineList []float64
-		// 2중 for loop 개선필요
+		// new
 		for i := 0; i < len(ptr); i++ {
-			for j := 0; j < topicPtr.size; j++ {
-				pnt := sub_mng.subnum2conv[j]
-				compare := ExactCompare(ptr[i].topic, pnt)
-				if compare == 1 {
-					ipAddr := sub_mng.sub2ip[j]
-					cosineValue := cosine[i]
-					iplist = append(iplist, ipAddr)
-					cosineList = append(cosineList, cosineValue)
-				}
-			}
+			likeIp := sub_mng.sub2ip[ptr[i]]
+			ipList = append(ipList, likeIp)
+			cosineList = append(cosineList, cosine[i])
 		}
+
+		////find exact topic match
+		//iplist := make([]string, 0)
+		//var cosineList []float64
+		//// 2중 for loop 개선필요
+		//for i := 0; i < len(ptr); i++ {
+		//	for j := 0; j < topicPtr.size; j++ {
+		//		pnt := sub_mng.subnum2conv[j]
+		//		compare := ExactCompare(ptr[i].topic, pnt)
+		//		if compare == 1 {
+		//			ipAddr := sub_mng.sub2ip[j]
+		//			cosineValue := cosine[i]
+		//			iplist = append(iplist, ipAddr)
+		//			cosineList = append(cosineList, cosineValue)
+		//		}
+		//	}
+		//}
 		moscato.MatchingManager.match_count++
-		moscato.SendQueue <- myType{iplist, msg, cosineList, nil}
+		moscato.SendQueue <- myType{ipList, msg, cosineList, nil}
 	}
 }

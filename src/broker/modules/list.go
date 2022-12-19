@@ -105,23 +105,25 @@ func Compare(a []int64, b []int64) int {
 	}
 }
 
-func (l *topicList) getTopicBySimilarity(topic []float64) ([]*topicNode, []float64) {
+func (l *topicList) getTopicBySimilarity(topic []float64) ([]int, []float64) {
 
 	var threshold = float64(0.9)
-	var ptr []*topicNode
+	var ptr []int
 	var cosineIdx []float64
 	topicPtr := l.head
+	var count = int(0)
 
 	for topicPtr != nil {
 		if len(topicPtr.topic) == 0 {
 			topicPtr = topicPtr.next
+			count += 1
 			continue
 		}
 		fmt.Println("Compare", FloatSlice2String(topicPtr.topic), "///", FloatSlice2String(topic))
 		cosine, _ := Cosine(topicPtr.topic, topic)
 		fmt.Println("Similarity %", cosine)
 		if cosine > threshold {
-			ptr = append(ptr, topicPtr)
+			ptr = append(ptr, count)
 			cosineIdx = append(cosineIdx, cosine)
 		}
 		topicPtr = topicPtr.next
